@@ -19,57 +19,67 @@ public class MarchMadnessBrackets {
         Bracket Algorithm starts here
          */
 
-        char[] openBrackets = {'[', '{', '('};
-        char[] endBrackets = {']', '}', ')'};
-        ArrayList<String> detectedStartBrackets = new ArrayList<String>();
-        ArrayList<String> detectedEndBrackets = new ArrayList<String>();
-        int counter = 0, k = 0;
-        ArrayList<String> toPrint = new ArrayList<String>();
-        String stringInBetween = "";
+        ArrayList<String> toPrintArray = new ArrayList<String>();
+        String toPrint = "";
+        String brackets = "";
+        int layer = 0;
 
+        // Traverse through the input argument
         for (int i = 0; i < inputArgument.length(); i++) {
-
-            for (int j = 0; j < openBrackets.length; j++) {
-
-                if (inputArgument.charAt(i) == openBrackets[j] ) {
-
-                    // Save the detected open bracket
-                    detectedStartBrackets.add(String.valueOf(inputArgument.charAt(i)));
-                    if (inputArgument.charAt(i) == '{') {
-                        detectedEndBrackets.add("}");
-                    } else if (inputArgument.charAt(i) == '(') {
-                        detectedEndBrackets.add(")");
-                    } else if (inputArgument.charAt(i) == '[') {
-                        detectedEndBrackets.add("]");
-                    }
-                    // Reset strings in between
-                    toPrint.add(stringInBetween);
-                    stringInBetween = "";
-                    // Increment counter
-                    counter++;
-
-                } else if (inputArgument.charAt(i) == endBrackets[j]) {
-
-                    k = detectedStartBrackets.size();
-                    if (!(String.valueOf(inputArgument.charAt(i)).equals(detectedEndBrackets.get(k-1)))) {
-                        System.out.println("Mismatched bracket " + inputArgument.charAt(i) + " instead of "
-                                + detectedStartBrackets.get(k-1));
-                        //Mismatched brackets found
-                        System.exit(1);
-                    }
-                    toPrint.add(stringInBetween);
-                    detectedStartBrackets.remove(k-1);
+            // If the character is an opening bracket, save it to brackets
+            if(isOpenBracket(inputArgument.charAt(i))) {
+                if (inputArgument.charAt(i) == '[') {
+                    brackets += "]";
+                } else if (inputArgument.charAt(i) == '{') {
+                    brackets += "}";
+                } else if (inputArgument.charAt(i) == '(') {
+                    brackets += ")";
                 }
+                layer++;
+            } // Else if the character is a closing bracket, check opening bracket
+            else if (isCloseBracket(inputArgument.charAt(i))) {
+                // If character is equal the last added end bracket
+                if (inputArgument.charAt(i) == brackets.charAt(brackets.length()-1)) {
+                    // Delete the last bracket in brackets string
+                    brackets = removeLastChar(brackets);
+                } else { // Else the closing bracket does not match, print error
+                    System.out.println("Missing bracket " +brackets.charAt(brackets.length()-1) + "instead of "
+                            + inputArgument.charAt(i) + " found");
+                    System.exit(1);
+                }
+            } // Else concatenate the string
+            else {
+                toPrint += inputArgument.charAt(i);
             }
-            stringInBetween += String.valueOf(inputArgument.charAt(i));
         }
 
-        if (detectedStartBrackets.size() > 0) {
-            System.out.println("Missing closing bracket for " + detectedEndBrackets.toString());
-        } else {
-            for (int i = 0; i < toPrint.size(); i++) {
-                System.out.println(toPrint.get(i).toString());
+        System.out.println(toPrintArray);
+
+    }
+
+    private static boolean isOpenBracket(char input) {
+        char[] startBracket = {'{','[','('};
+
+        for (int i = 0; i < 3; i++) {
+            if (input == startBracket[i]) {
+                return true;
             }
         }
+        return false;
+    }
+
+    private static boolean isCloseBracket(char input) {
+        char[] endBracket = {'}',']',')'};
+
+        for (int i = 0; i < 3; i++) {
+            if (input == endBracket[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String removeLastChar(String str) {
+        return str.substring(0,str.length()-1);
     }
 }
