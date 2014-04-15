@@ -20,14 +20,11 @@ public class MarchMadnessBrackets {
         Bracket Algorithm starts here
          */
 
-        ArrayList<String> toPrintArray = new ArrayList<String>();
         ArrayList<String> openBrackets = new ArrayList<String>();
         ArrayList<Integer> openBracketIndex = new ArrayList<Integer>();
         ArrayList<String> closeBrackets = new ArrayList<String>();
         ArrayList<Integer> closeBracketIndex = new ArrayList<Integer>();
         ArrayList<String> listString = new ArrayList<String>();
-        String toPrint = "";
-        int layer = 0;
 
         // Traverse through the input argument for bracket locations
         for (int i = 0; i < inputArgument.length(); i++) {
