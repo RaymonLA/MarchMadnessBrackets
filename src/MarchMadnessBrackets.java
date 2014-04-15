@@ -8,6 +8,7 @@ public class MarchMadnessBrackets {
     public static void main(String[] args) {
 
         String inputArgument="";
+        int j = 0;
 
         for (int i=0; i < args.length; i++) {
             inputArgument += args[i] + " ";
@@ -20,40 +21,65 @@ public class MarchMadnessBrackets {
          */
 
         ArrayList<String> toPrintArray = new ArrayList<String>();
+        ArrayList<String> openBrackets = new ArrayList<String>();
+        ArrayList<Integer> openBracketIndex = new ArrayList<Integer>();
+        ArrayList<String> closeBrackets = new ArrayList<String>();
+        ArrayList<Integer> closeBracketIndex = new ArrayList<Integer>();
+        ArrayList<String> listString = new ArrayList<String>();
         String toPrint = "";
-        String brackets = "";
         int layer = 0;
 
-        // Traverse through the input argument
+        // Traverse through the input argument for bracket locations
         for (int i = 0; i < inputArgument.length(); i++) {
-            // If the character is an opening bracket, save it to brackets
-            if(isOpenBracket(inputArgument.charAt(i))) {
-                if (inputArgument.charAt(i) == '[') {
-                    brackets += "]";
-                } else if (inputArgument.charAt(i) == '{') {
-                    brackets += "}";
-                } else if (inputArgument.charAt(i) == '(') {
-                    brackets += ")";
-                }
+            // Get bracket locations
+            if (isOpenBracket(inputArgument.charAt(i))) {
                 layer++;
-            } // Else if the character is a closing bracket, check opening bracket
+                openBrackets.add(String.valueOf(inputArgument.charAt(i)));
+                openBracketIndex.add(i);
+            } // If open bracket save it to openBrackets arraylist
             else if (isCloseBracket(inputArgument.charAt(i))) {
-                // If character is equal the last added end bracket
-                if (inputArgument.charAt(i) == brackets.charAt(brackets.length()-1)) {
-                    // Delete the last bracket in brackets string
-                    brackets = removeLastChar(brackets);
-                } else { // Else the closing bracket does not match, print error
-                    System.out.println("Missing bracket " +brackets.charAt(brackets.length()-1) + "instead of "
-                            + inputArgument.charAt(i) + " found");
-                    System.exit(1);
-                }
-            } // Else concatenate the string
-            else {
-                toPrint += inputArgument.charAt(i);
+                layer--;
+                closeBrackets.add(String.valueOf(inputArgument.charAt(i)));
+                closeBracketIndex.add(i);
+            } else {
+                toPrint += String.valueOf(inputArgument.charAt(i));
             }
         }
 
-        System.out.println(toPrintArray);
+        // Check for right amount of brackets
+        if (openBrackets.size() > closeBrackets.size()) {
+            System.out.println("Missing closing bracket");
+            System.exit(1);
+        } else if (openBrackets.size() < closeBrackets.size()) {
+            System.out.println("Missing open bracket");
+            System.exit(1);
+        }
+
+        // Check for mismatched brackets
+        for (int i = 0; i < openBrackets.size(); i++) {
+            if (openBrackets.get(i).equalsIgnoreCase("[")) {
+                if (!(closeBrackets.get((closeBrackets.size()-1)-i).equalsIgnoreCase("]"))) {
+                    System.out.println("Mismatched bracket " + closeBrackets.get(i) + " instead of ]");
+                }
+            } else if (openBrackets.get(i).equalsIgnoreCase("(")) {
+                if (!(closeBrackets.get((closeBrackets.size()-1)-i).equalsIgnoreCase(")"))) {
+                    System.out.println("Mismatched bracket " + closeBrackets.get(i) + " instead of )");
+                }
+            } else if (openBrackets.get(i).equalsIgnoreCase("{")) {
+                if (!(closeBrackets.get((closeBrackets.size()-1)-i).equalsIgnoreCase("}"))) {
+                    System.out.println("Mismatched bracket " + closeBrackets.get(i) + " instead of }");
+                }
+            }
+        }
+
+        System.out.println(openBracketIndex);
+        System.out.println(closeBracketIndex);
+
+        parseString(listString, 0, inputArgument, 0);
+
+        for (int i = 0; i < listString.size(); i++) {
+            System.out.print(listString.get(i));
+        }
 
     }
 
@@ -79,7 +105,21 @@ public class MarchMadnessBrackets {
         return false;
     }
 
-    private static String removeLastChar(String str) {
-        return str.substring(0,str.length()-1);
+    private static int parseString(ArrayList<String> listString, int listLocation, String inputArgument, int position) {
+
+        StringBuilder temp = new StringBuilder("");
+
+        for (; position < inputArgument.length(); position++) {
+            if (isOpenBracket(inputArgument.charAt(position))) {
+                position = parseString(listString,++listLocation,inputArgument,++position);
+            } else if (isCloseBracket(inputArgument.charAt(position))) {
+                listString.add(temp.toString());
+                return position;
+            }
+            if (!isCloseBracket(inputArgument.charAt(position))) {
+                temp.append(inputArgument.charAt(position));
+            }
+        }
+        return position;
     }
 }
