@@ -30,16 +30,12 @@ public class MarchMadnessBrackets {
         for (int i = 0; i < inputArgument.length(); i++) {
             // Get bracket locations
             if (isOpenBracket(inputArgument.charAt(i))) {
-                layer++;
                 openBrackets.add(String.valueOf(inputArgument.charAt(i)));
                 openBracketIndex.add(i);
             } // If open bracket save it to openBrackets arraylist
             else if (isCloseBracket(inputArgument.charAt(i))) {
-                layer--;
                 closeBrackets.add(String.valueOf(inputArgument.charAt(i)));
                 closeBracketIndex.add(i);
-            } else {
-                toPrint += String.valueOf(inputArgument.charAt(i));
             }
         }
 
