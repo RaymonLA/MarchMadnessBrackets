@@ -1,7 +1,7 @@
 MarchMadnessBrackets
 ====================
 
-March Madness Brackets easy challenge in /r/dailyprogrammer
+Challenge #154 [Easy] March Madness Brackets
 
 --------------------
 
